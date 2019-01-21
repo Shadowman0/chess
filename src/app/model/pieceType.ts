@@ -37,7 +37,7 @@ export class PieceType {
   }
 
   private static pieceNameSuffix(player: Player) {
-    if (player.color === 0) {
+    if (player.color === -1) {
       return 'white';
     }
     return 'black';
@@ -45,7 +45,8 @@ export class PieceType {
 
   private static kingReachFunction() {
     return (originField, targetField) => {
-      return (Math.abs(originField.x - targetField.x) + Math.abs(originField.y - targetField.y) <= 1) || ((Math.abs(originField.x - targetField.x) === 1 && Math.abs(originField.y - targetField.y) === 1));
+      return (Math.abs(originField.x - targetField.x) + Math.abs(originField.y - targetField.y) <= 1) ||
+        ((Math.abs(originField.x - targetField.x) === 1 && Math.abs(originField.y - targetField.y) === 1));
     };
   }
 

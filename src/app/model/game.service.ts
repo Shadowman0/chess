@@ -18,6 +18,7 @@ export class GameService {
   }
 
   selectOrMove(piece: Piece, field: Field) {
+    console.log(field);
     if (!this.selectedPiece) {
       if (piece && this.activePlayer === piece.player) {
         this.selectedPiece = piece;
@@ -25,7 +26,7 @@ export class GameService {
       }
     } else {
       const target: Piece = this.board.getPieceOfField(field);
-      if (this.selectedPiece.canReach(field, this.board) && !target) {
+      if (this.selectedPiece.canMoveTo(field, this.board) && !target) {
         this.selectedPiece.field = field;
         this.changePlayer();
         return;
@@ -44,7 +45,7 @@ export class GameService {
   }
 
   public canSelectedPieceReach(field: Field) {
-    return this.isPieceSelected() && this.selectedPiece.canReach(field, this.board);
+    return this.isPieceSelected() && this.selectedPiece.canMoveTo(field, this.board);
   }
 
   private changePlayer() {

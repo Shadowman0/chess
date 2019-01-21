@@ -1,0 +1,8 @@
+<div class="card col-sm align-content-center"
+     [class.black]="!isEven"
+     [class.white]="isEven"
+     [class.bg-info]="gameService.selectedPiece === piece && piece"
+     [class.bg-primary]="gameService.canSelectedPieceReach(field)"
+>
+  <img height="80px"  *ngIf="piece" [src]="'assets/'+piece?.pieceType?.image">
+</div>

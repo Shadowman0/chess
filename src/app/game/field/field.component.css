@@ -1,0 +1,16 @@
+.white
+{
+  background: ghostwhite;
+}
+
+.black
+{
+  background: darkgrey;
+}
+.card {
+  min-height: 120px;
+  min-width: 120px;
+}
+img {
+  vertical-align: middle;
+}

@@ -5,7 +5,8 @@ Active Player is Player {{gameService.activePlayer.color}}
       <app-field (click)="onClicked(field,board.getPieceOfField(field))"
                  [field]="field"
                  [isEven]="(i+j)%2===1"
-                 [piece]="board.getPieceOfField(field)">
+                 [piece]="board.getPieceOfField(field)"
+      >
       </app-field>
     </div>
   </div>

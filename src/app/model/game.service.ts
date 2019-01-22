@@ -18,7 +18,6 @@ export class GameService {
   }
 
   selectOrMove(piece: Piece, field: Field) {
-    console.log(field);
     if (!this.selectedPiece) {
       if (piece && this.activePlayer === piece.player) {
         this.selectedPiece = piece;
@@ -44,12 +43,25 @@ export class GameService {
     return this.selectedPiece != null;
   }
 
-  public canSelectedPieceReach(field: Field) {
+  public canSelectedPieceMoveTo(field: Field) {
     return this.isPieceSelected() && this.selectedPiece.canMoveTo(field, this.board);
+  }
+
+  public canSelectedPieceCapture(field: Field) {
+    return this.isPieceSelected() && this.selectedPiece.canCapture(field, this.board) && this.fieldContainsEnemyPiece(field);
+  }
+
+  private fieldContainsEnemyPiece(field: Field): boolean {
+    const pieceOfField = this.board.getPieceOfField(field);
+    return pieceOfField ? pieceOfField.player !== this.activePlayer : false;
   }
 
   private changePlayer() {
     this.selectedPiece = null;
     this.activePlayer = this.board.players.find(p => p !== this.activePlayer);
+  }
+
+  deselectPiece() {
+    this.selectedPiece = null;
   }
 }

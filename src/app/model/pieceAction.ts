@@ -6,7 +6,7 @@ export enum ActionType {
   BOTH,
 }
 
-enum RangeType {
+export enum RangeType {
   ONCE = 1,
   TWICE = 2,
   INFINIT = 7,
@@ -39,7 +39,7 @@ export class PieceAction {
   }
 
   static aPawnCaptureActions(direction: Field) {
-    return new PieceAction(ActionType.CAPTURE, RangeType.ONCE, [direction.add(Field.left()), direction.add(Field.right())]);
+    return new PieceAction(ActionType.CAPTURE, RangeType.ONCE, [direction.add(Field.top()), direction.add(Field.down())]);
   }
 
   static aKingActions() {

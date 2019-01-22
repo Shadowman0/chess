@@ -2,7 +2,7 @@ import {PieceType} from './pieceType';
 import {Field} from './field';
 import {Player} from './player';
 import {Board} from './board';
-import {ActionType, PieceAction} from './pieceAction';
+import {ActionType, PieceAction, RangeType} from './pieceAction';
 
 export class Piece {
 
@@ -19,8 +19,8 @@ export class Piece {
     this.afterMoveActions();
   }
 
-  canReach(targetField: Field, actions: PieceAction[], board: Board) {
-    const directions = this.getReachableFieldsWithOcclusion(actions, board);
+  private canReach(targetField: Field, actions: PieceAction[], board: Board, captureAction: boolean) {
+    const directions = this.getReachableFieldsWithOcclusion(actions, board, captureAction);
     return directions.some(direction => {
       return direction.some(fields => {
           return fields.some(field => {
@@ -33,33 +33,44 @@ export class Piece {
     // return this.pieceType.canReach(this.field, targetField);
   }
 
-  private getReachableFieldsWithOcclusion(actions: PieceAction[], board: Board) {
+  private getReachableFieldsWithOcclusion(actions: PieceAction[], board: Board, captureAction: boolean) {
     const directions: Field[][][] = actions.map(action => action.inDirectionsReachableFields(this._field));
-    directions.map(action => action.map(
+    return directions.map(action => action.map(
       fieldsInDirection => {
-        const indexOfFirstPiece = fieldsInDirection.findIndex((f: Field) => {
-          return board.getPieceOfField(f) != null;
-        });
-        return fieldsInDirection.splice(indexOfFirstPiece);
+        const indexOfFirstPiece = fieldsInDirection.findIndex(f => board.getPieceOfField(f) != null);
+        return indexOfFirstPiece !== -1 ? fieldsInDirection.slice(0, indexOfFirstPiece + (captureAction ? 1 : 0)) : fieldsInDirection;
       }));
-    return directions;
   }
 
   canMoveTo(field: Field, board: Board) {
-    const actions = this.actions.filter(pieceAction => {
-      return pieceAction.actionType === ActionType.MOVEMENT || pieceAction.actionType === ActionType.BOTH;
-    });
-    return this.canReach(field, actions, board);
+    const actions = this.getMoveActions();
+    return this.canReach(field, actions, board, false);
   }
 
   canCapture(field: Field, board: Board) {
+    const actions = this.getCaptureActions();
+    return this.canReach(field, actions, board, true);
+  }
+
+  private getMoveActions() {
+    const actions = this.actions.filter(pieceAction => {
+      return pieceAction.actionType === ActionType.MOVEMENT || pieceAction.actionType === ActionType.BOTH;
+    });
+    return actions;
+  }
+
+  private getCaptureActions() {
     const actions = this.actions.filter(pieceAction => {
       return pieceAction.actionType === ActionType.CAPTURE || pieceAction.actionType === ActionType.BOTH;
     });
-    return this.canReach(field, actions, board);
+    return actions;
   }
 
   private afterMoveActions() {
-
+    const pieceAction = this.actions.find(action => action.range === RangeType.TWICE);
+    if (!pieceAction) {
+      return;
+    }
+    pieceAction.range = RangeType.ONCE;
   }
 }
